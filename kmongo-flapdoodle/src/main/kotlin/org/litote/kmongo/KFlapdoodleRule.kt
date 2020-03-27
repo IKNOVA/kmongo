@@ -16,13 +16,15 @@
 
 package org.litote.kmongo
 
-import com.mongodb.MongoClient
+import com.mongodb.client.MongoClient
+import com.mongodb.MongoClientSettings
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import org.bson.types.ObjectId
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
+import org.litote.kmongo.service.ClassMappingType
 import org.litote.kmongo.util.KMongoUtil
 import kotlin.reflect.KClass
 
@@ -47,7 +49,8 @@ class KFlapdoodleRule<T : Any>(
     }
 
     val database: MongoDatabase by lazy {
-        KFlapdoodle.getDatabase(dbName)
+        val db = KFlapdoodle.getDatabase(dbName)
+        db.withCodecRegistry(ClassMappingType.codecRegistry(db.codecRegistry))
     }
 
     inline fun <reified T : Any> getCollection(): MongoCollection<T> =
