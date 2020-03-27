@@ -18,12 +18,11 @@ package org.litote.kmongo
 
 
 import com.mongodb.ConnectionString
-import com.mongodb.MongoClient
-import com.mongodb.MongoClient.getDefaultCodecRegistry
-import com.mongodb.MongoClientOptions
-import com.mongodb.MongoClientURI
+import com.mongodb.MongoClientSettings
 import com.mongodb.MongoCredential
 import com.mongodb.ServerAddress
+import com.mongodb.client.MongoClient
+import com.mongodb.client.MongoClients
 import org.bson.codecs.configuration.CodecRegistry
 import org.litote.kmongo.service.ClassMappingType
 
@@ -37,7 +36,7 @@ object KMongo {
      *
      * @return the mongo client
      */
-    fun createClient(): MongoClient = createClient(ServerAddress())
+    fun createClient(): MongoClient = MongoClients.create()
 
     /**
      * Creates a Mongo instance based on a (single) mongodb node.
@@ -45,7 +44,7 @@ object KMongo {
      * @param host server to connect to in format host(:port)
      * @return the mongo client
      */
-    fun createClient(host: String): MongoClient = createClient(ServerAddress(host))
+    fun createClient(host: String): MongoClient = MongoClients.create("$MONGO_PROTOCOL$host")
 
     /**
      * Creates a Mongo instance based on a (single) mongodb node (default port).
@@ -54,8 +53,11 @@ object KMongo {
      * @param options default query options
      * @return the mongo client
      */
-    fun createClient(host: String, options: MongoClientOptions): MongoClient =
-        createClient(ServerAddress(host), options)
+    fun createClient(host: String, settings: MongoClientSettings): MongoClient = MongoClients.create(
+            MongoClientSettings.builder(settings).applyConnectionString(
+                    ConnectionString("$MONGO_PROTOCOL$host")
+            ).build()
+    )
 
     /**
      * Creates a Mongo instance based on a (single) mongodb node.
@@ -64,7 +66,7 @@ object KMongo {
      * @param port the port on which the database is running
      * @return the mongo client
      */
-    fun createClient(host: String, port: Int): MongoClient = createClient(ServerAddress(host, port))
+    fun createClient(host: String, port: Int): MongoClient = createClient("$host:$port")
 
     /**
      * Creates a Mongo instance based on a (single) mongodb node.
@@ -72,8 +74,7 @@ object KMongo {
      * @param connectionString the settings
      * @return the mongo client
      */
-    fun createClient(connectionString: ConnectionString): MongoClient =
-        createClient(MongoClientURI(connectionString.toString()))
+    fun createClient(connectionString: ConnectionString): MongoClient = MongoClients.create(connectionString)
 
     /**
      * Creates a Mongo instance based on a (single) mongodb node
@@ -82,7 +83,7 @@ object KMongo {
      * @see com.mongodb.ServerAddress
      * @return the mongo client
      */
-    fun createClient(addr: ServerAddress): MongoClient = createClient(addr, MongoClientOptions.Builder().build())
+    fun createClient(addr: ServerAddress): MongoClient = createClient(addr.host, addr.port)
 
     /**
      * Creates a Mongo instance based on a (single) mongodb node and a list of credentials
@@ -93,8 +94,11 @@ object KMongo {
      *
      * @see com.mongodb.ServerAddress
      */
-    fun createClient(addr: ServerAddress, credentialsList: List<MongoCredential>): MongoClient =
-        createClient(addr, credentialsList, MongoClientOptions.Builder().build())
+    fun createClient(addr: ServerAddress, credential: MongoCredential): MongoClient = MongoClients.create(
+            MongoClientSettings.builder().credential(credential).applyConnectionString(
+                    ConnectionString("$MONGO_PROTOCOL${addr.host}:${addr.port}")
+            ).build()
+    )
 
     /**
      * Creates a Mongo instance based on a (single) mongo node using a given ServerAddress and default options.
@@ -105,8 +109,11 @@ object KMongo {
      *
      * @see com.mongodb.ServerAddress
      */
-    fun createClient(addr: ServerAddress, options: MongoClientOptions): MongoClient =
-        MongoClient(addr, configureOptions(options))
+    fun createClient(addr: ServerAddress, settings: MongoClientSettings): MongoClient = MongoClients.create(
+            MongoClientSettings.builder(configureSettings(settings)).applyConnectionString(
+                    ConnectionString("$MONGO_PROTOCOL${addr.host}:${addr.port}")
+            ).build()
+    )
 
     /**
      * Creates a Mongo instance based on a (single) mongo node using a given ServerAddress and default options.
@@ -119,10 +126,14 @@ object KMongo {
      * @see com.mongodb.ServerAddress
      */
     fun createClient(
-        addr: ServerAddress,
-        credentialsList: List<MongoCredential>,
-        options: MongoClientOptions
-    ): MongoClient = MongoClient(addr, credentialsList, configureOptions(options))
+            addr: ServerAddress,
+            credential: MongoCredential,
+            settings: MongoClientSettings
+    ): MongoClient = MongoClients.create(
+            MongoClientSettings.builder(configureSettings(settings)).applyConnectionString(
+                    ConnectionString("$MONGO_PROTOCOL${addr.host}:${addr.port}")
+            ).credential(credential).build()
+    )
 
     /**
      *
@@ -140,8 +151,9 @@ object KMongo {
      *
      * @see com.mongodb.ServerAddress
      */
-    fun createClient(seeds: List<ServerAddress>): MongoClient =
-        createClient(seeds, MongoClientOptions.Builder().build())
+    fun createClient(seeds: List<ServerAddress>): MongoClient = MongoClients.create(
+            MongoClientSettings.builder().applyToClusterSettings { it.hosts(seeds) }.build()
+    )
 
     /**
      *
@@ -161,8 +173,9 @@ object KMongo {
      *
      * @see com.mongodb.ServerAddress
      */
-    fun createClient(seeds: List<ServerAddress>, credentialsList: List<MongoCredential>): MongoClient =
-        createClient(seeds, credentialsList, MongoClientOptions.Builder().build())
+    fun createClient(seeds: List<ServerAddress>, credential: MongoCredential): MongoClient = MongoClients.create(
+            MongoClientSettings.builder().applyToClusterSettings { it.hosts(seeds) }.credential(credential).build()
+    )
 
     /**
      *
@@ -182,8 +195,9 @@ object KMongo {
      *
      * @see com.mongodb.ServerAddress
      */
-    fun createClient(seeds: List<ServerAddress>, options: MongoClientOptions): MongoClient =
-        MongoClient(seeds, configureOptions(options))
+    fun createClient(seeds: List<ServerAddress>, settings: MongoClientSettings): MongoClient = MongoClients.create(
+            MongoClientSettings.builder(configureSettings(settings)).applyToClusterSettings { it.hosts(seeds) }.build()
+    )
 
     /**
      *
@@ -205,30 +219,20 @@ object KMongo {
      * @see com.mongodb.ServerAddress
      */
     fun createClient(
-        seeds: List<ServerAddress>,
-        credentialsList: List<MongoCredential>,
-        options: MongoClientOptions
-    ): MongoClient = MongoClient(seeds, credentialsList, configureOptions(options))
-
-    /**
-     * Creates a Mongo described by a URI. If only one address is used it will only connect to that node, otherwise it will discover all
-     * nodes.
-
-     * @param uri the URI
-     * @return the mongo client
-     * @throws MongoException if theres a failure
-     */
-    fun createClient(uri: MongoClientURI): MongoClient = MongoClient(
-        MongoClientURI(
-            uri.uri,
-            MongoClientOptions.builder(uri.options).codecRegistry(configureRegistry(uri.options.codecRegistry))
-        )
+            seeds: List<ServerAddress>,
+            credential: MongoCredential,
+            settings: MongoClientSettings
+    ): MongoClient = MongoClients.create(
+            MongoClientSettings.builder(configureSettings(settings)).applyToClusterSettings { it.hosts(seeds) }
+                    .credential(credential).build()
     )
 
-    private fun configureOptions(clientOptions: MongoClientOptions): MongoClientOptions =
-        MongoClientOptions.builder(clientOptions).codecRegistry(configureRegistry(clientOptions.codecRegistry)).build()
+    private fun configureSettings(clientSettings: MongoClientSettings): MongoClientSettings =
+            MongoClientSettings.builder(clientSettings).codecRegistry(configureRegistry(clientSettings.codecRegistry)).build()
 
-    internal fun configureRegistry(codecRegistry: CodecRegistry = getDefaultCodecRegistry()): CodecRegistry {
+    internal fun configureRegistry(codecRegistry: CodecRegistry = MongoClientSettings.getDefaultCodecRegistry()): CodecRegistry {
         return ClassMappingType.codecRegistry(codecRegistry)
     }
 }
+
+private const val MONGO_PROTOCOL = "mongodb://"
