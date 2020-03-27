@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package kotlin.collections
+package org.litote.kmongo.kotlin.collections
 
 import com.mongodb.Block
 import com.mongodb.Function
@@ -22,10 +22,10 @@ import com.mongodb.ServerAddress
 import com.mongodb.ServerCursor
 import com.mongodb.client.MongoCursor
 import com.mongodb.client.MongoIterable
-import kotlin.internal.HidesMembers
-import kotlin.internal.InlineOnly
-import kotlin.internal.NoInfer
-import kotlin.internal.OnlyInputTypes
+import org.litote.kmongo.kotlin.internal.HidesMembers
+import org.litote.kmongo.kotlin.internal.InlineOnly
+import org.litote.kmongo.kotlin.internal.NoInfer
+import org.litote.kmongo.kotlin.internal.OnlyInputTypes
 
 //utility class & methods ->
 
@@ -57,7 +57,7 @@ fun <T, R> MongoIterable<T>.useCursor(block: (Iterable<T>) -> R): R {
  * @param
  */
 @HidesMembers
-inline fun <T> MongoIterable<T>.forEach(crossinline action: (T) -> Unit): Unit =
+inline fun <T> MongoIterable<T>.forEachC(crossinline action: (T) -> Unit): Unit =
     forEach(Block<T> { action.invoke(it) })
 
 /**
@@ -90,7 +90,7 @@ private class MongoIndexingIterable<T>(
 ) : MongoIterable<IndexedValue<T>> {
 
     override fun batchSize(batchSize: Int): MongoIterable<IndexedValue<T>> =
-        MongoIndexingIterable(iterable.batchSize(batchSize))
+            MongoIndexingIterable(iterable.batchSize(batchSize))
 
     override fun <U : Any?> map(mapper: Function<IndexedValue<T>, U>): MongoIterable<U> {
         var index = 0
@@ -129,7 +129,7 @@ fun <T> MongoIterable<T>.withIndex(): MongoIterable<IndexedValue<T>> {
  * @sample samples.collections.Iterators.withIndexIterator
  */
 fun <T> MongoCursor<T>.withIndex(): MongoCursor<IndexedValue<T>> =
-    MongoIndexingIterator(this)
+        MongoIndexingIterator(this)
 
 /**
  * Returns an original collection containing all the non-`null` elements, throwing an [IllegalArgumentException] if there are any `null` elements.

@@ -40,6 +40,7 @@ import com.mongodb.client.result.DeleteResult
 import com.mongodb.client.result.UpdateResult
 import org.bson.BsonDocument
 import org.bson.conversions.Bson
+import org.litote.kmongo.kotlin.collections.firstOrNull
 import org.litote.kmongo.util.KMongoUtil
 import org.litote.kmongo.util.PairProjection
 import org.litote.kmongo.util.SingleProjection

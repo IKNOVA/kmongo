@@ -29,7 +29,7 @@ import com.mongodb.client.model.UpdateOneModel
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.Updates
 import org.bson.conversions.Bson
-import kotlin.internal.OnlyInputTypes
+import org.litote.kmongo.kotlin.internal.OnlyInputTypes
 import kotlin.reflect.KProperty
 
 /**

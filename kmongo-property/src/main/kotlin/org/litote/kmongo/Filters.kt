@@ -25,7 +25,7 @@ import org.bson.BsonType
 import org.bson.Document
 import org.bson.conversions.Bson
 import java.util.regex.Pattern
-import kotlin.internal.OnlyInputTypes
+import org.litote.kmongo.kotlin.internal.OnlyInputTypes
 import kotlin.reflect.KProperty
 
 /**

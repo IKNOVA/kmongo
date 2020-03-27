@@ -25,6 +25,7 @@ import org.junit.Test
 import org.litote.kmongo.AllCategoriesKMongoBaseTest
 import org.litote.kmongo.MongoOperator.match
 import org.litote.kmongo.aggregate
+import org.litote.kmongo.kotlin.collections.toList
 import org.litote.kmongo.model.Friend
 import org.litote.kmongo.session.AggregateWithSessionTest.Article
 import kotlin.test.assertEquals

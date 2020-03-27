@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package kotlin.internal
+package org.litote.kmongo.kotlin.internal
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.BINARY)

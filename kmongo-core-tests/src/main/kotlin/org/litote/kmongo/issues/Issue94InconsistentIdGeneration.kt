@@ -24,6 +24,7 @@ import org.junit.Test
 import org.litote.kmongo.AllCategoriesKMongoBaseTest
 import org.litote.kmongo.Id
 import org.litote.kmongo.issues.Issue94InconsistentIdGeneration.Task
+import org.litote.kmongo.kotlin.collections.forEachC
 import org.litote.kmongo.newId
 import org.litote.kmongo.withDocumentClass
 import kotlin.test.assertTrue
@@ -42,7 +43,7 @@ class Issue94InconsistentIdGeneration : AllCategoriesKMongoBaseTest<Task>() {
         val t2 = Task()
         col.insertOne(t1)
         col.insertOne(t2)
-        col.withDocumentClass<Document>().find().forEach {
+        col.withDocumentClass<Document>().find().forEachC {
             assertTrue { it.get("_id") is ObjectId }
         }
     }

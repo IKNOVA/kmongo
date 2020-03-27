@@ -18,9 +18,9 @@ package org.litote.kmongo
 
 import com.mongodb.client.model.IndexOptions
 import org.junit.Test
+import org.litote.kmongo.kotlin.collections.first
 import org.litote.kmongo.model.Friend
 import java.util.concurrent.TimeUnit
-import kotlin.reflect.KProperty
 import kotlin.test.assertEquals
 
 /**

@@ -26,6 +26,7 @@ import com.mongodb.lang.Nullable
 import org.junit.Test
 import org.litote.kmongo.AllCategoriesKMongoBaseTest
 import org.litote.kmongo.evaluate
+import org.litote.kmongo.kotlin.collections.*
 import org.litote.kmongo.model.Friend
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -167,7 +168,7 @@ class MongoIterableTest : AllCategoriesKMongoBaseTest<Friend>() {
         col.insertOne(john)
         val iterable = MongoIterableWrapper(col.find())
         val friends = mutableListOf<Friend>()
-        iterable.forEach { friends.add(it) }
+        iterable.forEachC { friends.add(it) }
 
         assertTrue(iterable.cursor?.closed ?: false)
 
