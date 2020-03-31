@@ -31,40 +31,40 @@
     <modules>
         <module>kmongo-data</module>
         <module>kmongo-id</module>
-        <module>kmongo-id-jackson</module>
-        <module>kmongo-shared-tests-java</module>
-        <module>kmongo-shared-tests</module>
+        <!--        <module>kmongo-id-jackson</module>-->
+        <!--        <module>kmongo-shared-tests-java</module>-->
+        <!--        <module>kmongo-shared-tests</module>-->
         <module>kmongo-shared</module>
         <module>kmongo-property</module>
-        <module>kmongo-annotation-processor</module>
-        <module>kmongo-jackson-mapping</module>
-        <module>kmongo-native-mapping</module>
+        <!--        <module>kmongo-annotation-processor</module>-->
+        <!--        <module>kmongo-jackson-mapping</module>-->
+        <!--        <module>kmongo-native-mapping</module>-->
         <module>kmongo-kbson</module>
         <module>kmongo-serialization-mapping</module>
-        <module>kmongo-flapdoodle</module>
-        <module>kmongo-fongo</module>
+        <!--        <module>kmongo-flapdoodle</module>-->
+        <!--        <module>kmongo-fongo</module>-->
         <module>kmongo-core</module>
         <module>kmongo-core-tests</module>
-        <module>kmongo</module>
-        <module>kmongo-native</module>
+        <!--        <module>kmongo</module>-->
+        <!--        <module>kmongo-native</module>-->
         <module>kmongo-serialization</module>
-        <module>kmongo-async-shared</module>
-        <module>kmongo-async-core</module>
-        <module>kmongo-async-core-tests</module>
-        <module>kmongo-async</module>
-        <module>kmongo-async-native</module>
-        <module>kmongo-async-serialization</module>
-        <module>kmongo-coroutine-core</module>
-        <module>kmongo-coroutine-core-tests</module>
-        <module>kmongo-coroutine</module>
-        <module>kmongo-coroutine-native</module>
-        <module>kmongo-coroutine-serialization</module>
-        <module>kmongo-rxjava2-core</module>
-        <module>kmongo-rxjava2-core-tests</module>
-        <module>kmongo-rxjava2</module>
-        <module>kmongo-rxjava2-native</module>
-        <module>kmongo-rxjava2-serialization</module>
-        <module>kmongo-dokka</module>
+        <!--        <module>kmongo-async-shared</module>-->
+        <!--        <module>kmongo-async-core</module>-->
+        <!--        <module>kmongo-async-core-tests</module>-->
+        <!--        <module>kmongo-async</module>-->
+        <!--        <module>kmongo-async-native</module>-->
+        <!--        <module>kmongo-async-serialization</module>-->
+        <!--        <module>kmongo-coroutine-core</module>-->
+        <!--        <module>kmongo-coroutine-core-tests</module>-->
+        <!--        <module>kmongo-coroutine</module>-->
+        <!--        <module>kmongo-coroutine-native</module>-->
+        <!--        <module>kmongo-coroutine-serialization</module>-->
+        <!--        <module>kmongo-rxjava2-core</module>-->
+        <!--        <module>kmongo-rxjava2-core-tests</module>-->
+        <!--        <module>kmongo-rxjava2</module>-->
+        <!--        <module>kmongo-rxjava2-native</module>-->
+        <!--        <module>kmongo-rxjava2-serialization</module>-->
+        <!--        <module>kmongo-dokka</module>-->
         <module>kmongo-osgi-bundle</module>
     </modules>
 
