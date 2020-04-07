@@ -22,7 +22,7 @@
 
   <groupId>org.litote.kmongo</groupId>
   <artifactId>kmongo-root</artifactId>
-  <version>3.12.3-SNAPSHOT</version>
+  <version>3.12.2-IKN1</version>
   <packaging>pom</packaging>
   <name>KMongo root project</name>
   <description>Mongo client for Kotlin</description>

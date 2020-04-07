@@ -7,7 +7,7 @@
   <parent>
     <artifactId>kmongo-root</artifactId>
     <groupId>org.litote.kmongo</groupId>
-    <version>3.12.3-SNAPSHOT</version>
+    <version>3.12.2-IKN1</version>
   </parent>
 
   <artifactId>kmongo-osgi-bundle</artifactId>
