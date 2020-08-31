@@ -871,86 +871,133 @@ inline fun <T> MongoIterable<T>.forEachIndexed(crossinline action: (index: Int, 
     return useCursor { it.forEachIndexed(action) }
 }
 
-/**
- * Returns the largest element or `null` if there are no elements.
- *
- * If any of elements is `NaN` returns `NaN`.
- */
+@Deprecated("Use maxOrNull instead.", ReplaceWith("maxOrNull()"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
 @SinceKotlin("1.1")
-fun MongoIterable<Double>.max(): Double? {
-    return useCursor { it.max() }
-}
+fun MongoIterable<Double>.max(): Double?  = maxOrNull()
 
 /**
  * Returns the largest element or `null` if there are no elements.
  *
  * If any of elements is `NaN` returns `NaN`.
  */
-@SinceKotlin("1.1")
-fun MongoIterable<Float>.max(): Float? {
-    return useCursor { it.max() }
+@SinceKotlin("1.4")
+fun MongoIterable<Double>.maxOrNull(): Double? {
+    return useCursor { it.maxOrNull() }
 }
+
+@Deprecated("Use maxOrNull instead.", ReplaceWith("maxOrNull()"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+@SinceKotlin("1.1")
+fun MongoIterable<Float>.max(): Float?  = maxOrNull()
+
+/**
+ * Returns the largest element or `null` if there are no elements.
+ *
+ * If any of elements is `NaN` returns `NaN`.
+ */
+@SinceKotlin("1.4")
+fun MongoIterable<Float>.maxOrNull(): Float? {
+    return useCursor { it.maxOrNull() }
+}
+
+@Deprecated("Use maxOrNull instead.", ReplaceWith("maxOrNull()"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+@SinceKotlin("1.1")
+fun <T : Comparable<T>> MongoIterable<T>.max(): T? = maxOrNull()
 
 /**
  * Returns the largest element or `null` if there are no elements.
  */
-fun <T : Comparable<T>> MongoIterable<T>.max(): T? {
-    return useCursor { it.max() }
+fun <T : Comparable<T>> MongoIterable<T>.maxOrNull(): T? {
+    return useCursor { it.maxOrNull() }
 }
+
+@Deprecated("Use maxByOrNull instead.", ReplaceWith("maxByOrNull(selector)"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+@SinceKotlin("1.1")
+inline fun <T, R : Comparable<R>> MongoIterable<T>.maxBy(crossinline selector: (T) -> R): T?  = maxByOrNull(selector)
 
 /**
  * Returns the first element yielding the largest value of the given function or `null` if there are no elements.
  */
-inline fun <T, R : Comparable<R>> MongoIterable<T>.maxBy(crossinline selector: (T) -> R): T? {
-    return useCursor { it.maxBy(selector) }
+inline fun <T, R : Comparable<R>> MongoIterable<T>.maxByOrNull(crossinline selector: (T) -> R): T? {
+    return useCursor { it.maxByOrNull(selector) }
 }
+
+
+@Deprecated("Use maxWithOrNull instead.", ReplaceWith("maxWithOrNull(comparator)"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+public fun <T> MongoIterable<T>.maxWith(comparator: Comparator<in T>): T? = maxWithOrNull(comparator)
 
 /**
  * Returns the first element having the largest value according to the provided [comparator] or `null` if there are no elements.
  */
-fun <T> MongoIterable<T>.maxWith(comparator: Comparator<in T>): T? {
-    return useCursor { it.maxWith(comparator) }
+fun <T> MongoIterable<T>.maxWithOrNull(comparator: Comparator<in T>): T? {
+    return useCursor { it.maxWithOrNull(comparator) }
 }
+
+@Deprecated("Use minOrNull instead.", ReplaceWith("minOrNull()"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+@SinceKotlin("1.1")
+fun MongoIterable<Double>.min(): Double? = minOrNull()
 
 /**
  * Returns the smallest element or `null` if there are no elements.
  *
  * If any of elements is `NaN` returns `NaN`.
  */
-@SinceKotlin("1.1")
-fun MongoIterable<Double>.min(): Double? {
-    return useCursor { it.min() }
+@SinceKotlin("1.4")
+fun MongoIterable<Double>.minOrNull(): Double? {
+    return useCursor { it.minOrNull() }
 }
+
+@Deprecated("Use minOrNull instead.", ReplaceWith("minOrNull()"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+@SinceKotlin("1.1")
+fun MongoIterable<Float>.min(): Float? = minOrNull()
 
 /**
  * Returns the smallest element or `null` if there are no elements.
  *
  * If any of elements is `NaN` returns `NaN`.
  */
-@SinceKotlin("1.1")
-fun MongoIterable<Float>.min(): Float? {
-    return useCursor { it.min() }
+@SinceKotlin("1.4")
+fun MongoIterable<Float>.minOrNull(): Float? {
+    return useCursor { it.minOrNull() }
 }
+
+@Deprecated("Use minOrNull instead.", ReplaceWith("minOrNull()"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+public fun <T : Comparable<T>> MongoIterable<T>.min(): T? = minOrNull()
 
 /**
  * Returns the smallest element or `null` if there are no elements.
  */
-fun <T : Comparable<T>> MongoIterable<T>.min(): T? {
-    return useCursor { it.min() }
+fun <T : Comparable<T>> MongoIterable<T>.minOrNull(): T? {
+    return useCursor { it.minOrNull() }
 }
+
+@Deprecated("Use minByOrNull instead.", ReplaceWith("minByOrNull(selector)"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+public inline fun <T, R : Comparable<R>> MongoIterable<T>.minBy(crossinline selector: (T) -> R): T? = minByOrNull(selector)
 
 /**
  * Returns the first element yielding the smallest value of the given function or `null` if there are no elements.
  */
-inline fun <T, R : Comparable<R>> MongoIterable<T>.minBy(crossinline selector: (T) -> R): T? {
-    return useCursor { it.minBy(selector) }
+inline fun <T, R : Comparable<R>> MongoIterable<T>.minByOrNull(crossinline selector: (T) -> R): T? {
+    return useCursor { it.minByOrNull(selector) }
 }
+
+@Deprecated("Use minWithOrNull instead.", ReplaceWith("minWithOrNull(comparator)"))
+@DeprecatedSinceKotlin(warningSince = "1.4")
+public fun <T> MongoIterable<T>.minWith(comparator: Comparator<in T>): T? = minWithOrNull(comparator)
 
 /**
  * Returns the first element having the smallest value according to the provided [comparator] or `null` if there are no elements.
  */
-fun <T> MongoIterable<T>.minWith(comparator: Comparator<in T>): T? {
-    return useCursor { it.minWith(comparator) }
+fun <T> MongoIterable<T>.minWithOrNull(comparator: Comparator<in T>): T? {
+    return useCursor { it.minWithOrNull(comparator) }
 }
 
 /**

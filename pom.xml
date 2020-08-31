@@ -63,6 +63,7 @@
         <module>kmongo-rxjava2-native</module>
         <module>kmongo-rxjava2-serialization</module>
         <module>kmongo-dokka</module>
+        <module>kmongo-kotlin-fragment</module>
         <module>kmongo-osgi-bundle</module>
     </modules>
 
@@ -208,6 +209,11 @@
             <dependency>
                 <groupId>org.litote.kmongo</groupId>
                 <artifactId>kmongo-serialization-mapping</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.litote.kmongo</groupId>
+                <artifactId>kmongo-kotlin-fragment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
