@@ -41,7 +41,6 @@ import com.mongodb.client.result.DeleteResult
 import com.mongodb.client.result.UpdateResult
 import org.bson.BsonDocument
 import org.bson.conversions.Bson
-import org.litote.kmongo.kotlin.collections.firstOrNull
 import org.litote.kmongo.util.KMongoUtil
 import org.litote.kmongo.util.KMongoUtil.extractId
 import org.litote.kmongo.util.KMongoUtil.toBson
@@ -55,24 +54,6 @@ import org.litote.kmongo.util.singleProjectionCodecRegistry
 import org.litote.kmongo.util.tripleProjectionCodecRegistry
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
-
-
-/**
- * Counts the number of documents in the collection according to the given options.
- *
- * @param clientSession the client session with which to associate this operation
- * @param filter  the query filter
- * @param options the options describing the count
- *
- * @return the number of documents in the collection
- */
-@Deprecated("use countDocuments instead")
-fun <T> MongoCollection<T>.count(
-    clientSession: ClientSession,
-    filter: String,
-    options: CountOptions = CountOptions()
-): Long =
-    count(clientSession, toBson(filter), options)
 
 /**
  * Counts the number of documents in the collection according to the given options.

@@ -19,16 +19,14 @@ package org.litote.kmongo.coroutine
 import com.mongodb.client.model.Collation
 import com.mongodb.client.model.MapReduceAction
 import com.mongodb.reactivestreams.client.MapReducePublisher
-import com.mongodb.reactivestreams.client.Success
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import kotlinx.coroutines.reactive.awaitSingle
 import org.bson.conversions.Bson
 import java.util.concurrent.TimeUnit
 
 /**
  * Gets coroutine version of [MapReducePublisher].
  */
-val <T> MapReducePublisher<T>.coroutine: CoroutineMapReducePublisher<T>
+val <T: Any> MapReducePublisher<T>.coroutine: CoroutineMapReducePublisher<T>
     get() = CoroutineMapReducePublisher(
         this
     )
@@ -36,7 +34,7 @@ val <T> MapReducePublisher<T>.coroutine: CoroutineMapReducePublisher<T>
 /**
  * Coroutine wrapper around [MapReducePublisher].
  */
-class CoroutineMapReducePublisher<T>(override val publisher: MapReducePublisher<T>) :
+class CoroutineMapReducePublisher<T: Any>(override val publisher: MapReducePublisher<T>) :
     CoroutinePublisher<T>(publisher) {
 
     /**
@@ -73,7 +71,7 @@ class CoroutineMapReducePublisher<T>(override val publisher: MapReducePublisher<
     /**
      * Sets the sort criteria to apply to the query.
      *
-     * @param sort the sort criteria, which may be null.
+     * @param sort the sort criteria
      * @return this
      * @mongodb.driver.manual reference/method/cursor.sort/ Sort
      */
@@ -91,7 +89,7 @@ class CoroutineMapReducePublisher<T>(override val publisher: MapReducePublisher<
     /**
      * Sets the limit to apply.
      *
-     * @param limit the limit, which may be null
+     * @param limit the limit
      * @return this
      * @mongodb.driver.manual reference/method/cursor.limit/#cursor.limit Limit
      */
@@ -190,7 +188,7 @@ class CoroutineMapReducePublisher<T>(override val publisher: MapReducePublisher<
      * @return a single element indicating when the operation has completed
      * @mongodb.driver.manual aggregation/ Aggregation
      */
-    suspend fun toCollection(): Success = publisher.toCollection().awaitSingle()
+    suspend fun toCollection() = publisher.toCollection().awaitFirstOrNull()
 
     /**
      * Sets the collation options

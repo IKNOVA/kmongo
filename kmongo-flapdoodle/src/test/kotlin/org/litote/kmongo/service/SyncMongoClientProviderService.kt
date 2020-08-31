@@ -26,10 +26,17 @@ import com.mongodb.client.MongoClients
  */
 internal class SyncMongoClientProviderService : MongoClientProviderService<MongoClient> {
 
-    override fun createMongoClient(connectionString: ConnectionString): MongoClient = MongoClients.create(
-            MongoClientSettings.builder().codecRegistry(
-                    ClassMappingType.codecRegistry(MongoClientSettings.getDefaultCodecRegistry())
-            ).applyConnectionString(connectionString).build()
-    )
-
+    override fun createMongoClient(connectionString: ConnectionString): MongoClient {
+        return MongoClients.create(
+            MongoClientSettings
+                .builder()
+                .applyConnectionString(connectionString)
+                .codecRegistry(
+                    ClassMappingType.codecRegistry(
+                        MongoClientSettings.getDefaultCodecRegistry()
+                    )
+                )
+                .build()
+        )
+    }
 }

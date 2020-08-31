@@ -40,10 +40,11 @@ import com.mongodb.client.model.ReplaceOptions
 import com.mongodb.client.model.UpdateOptions
 import com.mongodb.client.model.WriteModel
 import com.mongodb.client.result.DeleteResult
+import com.mongodb.client.result.InsertManyResult
+import com.mongodb.client.result.InsertOneResult
 import com.mongodb.client.result.UpdateResult
 import com.mongodb.reactivestreams.client.ClientSession
 import com.mongodb.reactivestreams.client.MongoCollection
-import com.mongodb.reactivestreams.client.Success
 import kotlinx.coroutines.reactive.awaitFirstOrNull
 import kotlinx.coroutines.reactive.awaitSingle
 import org.bson.BsonDocument
@@ -56,6 +57,7 @@ import org.litote.kmongo.ascending
 import org.litote.kmongo.path
 import org.litote.kmongo.set
 import org.litote.kmongo.util.KMongoUtil
+import org.litote.kmongo.util.KMongoUtil.EMPTY_JSON
 import org.litote.kmongo.util.KMongoUtil.extractId
 import org.litote.kmongo.util.KMongoUtil.idFilterQuery
 import org.litote.kmongo.util.KMongoUtil.setModifier
@@ -245,7 +247,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @param <T>   the target type of the iterable.
      * @mongodb.driver.manual reference/command/distinct/ Distinct
      */
-    inline fun <reified T> distinct(
+    inline fun <reified T: Any> distinct(
         fieldName: String,
         filter: Bson = EMPTY_BSON
     ): CoroutineDistinctPublisher<T> =
@@ -263,7 +265,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    inline fun <reified T> distinct(
+    inline fun <reified T: Any> distinct(
         clientSession: ClientSession,
         fieldName: String,
         filter: Bson
@@ -286,7 +288,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @param <T> the target document type of the iterable.
      * @mongodb.driver.manual tutorial/query-documents/ Find
      */
-    inline fun <reified T> findAndCast(filter: Bson = EMPTY_BSON): CoroutineFindPublisher<T> =
+    inline fun <reified T: Any> findAndCast(filter: Bson = EMPTY_BSON): CoroutineFindPublisher<T> =
         collection.find(filter, T::class.java).coroutine
 
     /**
@@ -311,7 +313,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    inline fun <reified T> findAndCast(
+    inline fun <reified T: Any> findAndCast(
         clientSession: ClientSession,
         filter: Bson
     ): CoroutineFindPublisher<T> = collection.find(clientSession, filter, T::class.java).coroutine
@@ -324,7 +326,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @return a publisher containing the result of the aggregation operation
      * @mongodb.driver.manual aggregation/ Aggregation
      */
-    inline fun <reified T> aggregate(pipeline: List<Bson>): CoroutineAggregatePublisher<T> =
+    inline fun <reified T: Any> aggregate(pipeline: List<Bson>): CoroutineAggregatePublisher<T> =
         collection.aggregate(pipeline, T::class.java).coroutine
 
     /**
@@ -338,7 +340,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    inline fun <reified T> aggregate(
+    inline fun <reified T: Any> aggregate(
         clientSession: ClientSession,
         pipeline: List<Bson>
     ): CoroutineAggregatePublisher<T> =
@@ -353,7 +355,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.driver.manual reference/operator/aggregation/changeStream $changeStream
      * @since 1.6
      */
-    inline fun <reified T> watch(pipeline: List<Bson> = emptyList()): CoroutineChangeStreamPublisher<T> =
+    inline fun <reified T: Any> watch(pipeline: List<Bson> = emptyList()): CoroutineChangeStreamPublisher<T> =
         collection.watch(pipeline, T::class.java).coroutine
 
     /**
@@ -367,7 +369,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    inline fun <reified T> watch(
+    inline fun <reified T: Any> watch(
         clientSession: ClientSession,
         pipeline: List<Bson>
     ): CoroutineChangeStreamPublisher<T> =
@@ -383,7 +385,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @return a publisher containing the result of the map-reduce operation
      * @mongodb.driver.manual reference/command/mapReduce/ map-reduce
      */
-    inline fun <reified T> mapReduce(
+    inline fun <reified T: Any> mapReduce(
         mapFunction: String,
         reduceFunction: String
     ): CoroutineMapReducePublisher<T> = collection.mapReduce(mapFunction, reduceFunction, T::class.java).coroutine
@@ -401,7 +403,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    inline fun <reified T> mapReduce(
+    inline fun <reified T: Any> mapReduce(
         clientSession: ClientSession, mapFunction: String, reduceFunction: String
     ): CoroutineMapReducePublisher<T> =
         collection.mapReduce(clientSession, mapFunction, reduceFunction, T::class.java).coroutine
@@ -443,7 +445,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * com.mongodb.DuplicateKeyException or com.mongodb.MongoException
      * @since 1.2
      */
-    suspend fun insertOne(document: T, options: InsertOneOptions = InsertOneOptions()): Success =
+    suspend fun insertOne(document: T, options: InsertOneOptions = InsertOneOptions()): InsertOneResult =
         collection.insertOne(document, options).awaitSingle()
 
     /**
@@ -460,7 +462,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
         clientSession: ClientSession,
         document: T,
         options: InsertOneOptions = InsertOneOptions()
-    ): Success = collection.insertOne(clientSession, document, options).awaitSingle()
+    ): InsertOneResult = collection.insertOne(clientSession, document, options).awaitSingle()
 
 
     /**
@@ -471,7 +473,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @param options   the options to apply to the operation
      * com.mongodb.DuplicateKeyException or com.mongodb.MongoException
      */
-    suspend fun insertMany(documents: List<T>, options: InsertManyOptions = InsertManyOptions()): Success =
+    suspend fun insertMany(documents: List<T>, options: InsertManyOptions = InsertManyOptions()): InsertManyResult =
         collection.insertMany(documents, options).awaitSingle()
 
     /**
@@ -489,7 +491,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
         clientSession: ClientSession,
         documents: List<T>,
         options: InsertManyOptions = InsertManyOptions()
-    ): Success =
+    ): InsertManyResult =
         collection.insertMany(clientSession, documents, options).awaitSingle()
 
     /**
@@ -757,7 +759,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      *
      * @mongodb.driver.manual reference/command/drop/ Drop Collection
      */
-    suspend fun drop(): Success = collection.drop().awaitSingle()
+    suspend fun drop() = collection.drop().awaitFirstOrNull()
 
     /**
      * Drops this collection from the Database.
@@ -767,7 +769,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    suspend fun drop(clientSession: ClientSession): Success = collection.drop(clientSession).awaitSingle()
+    suspend fun drop(clientSession: ClientSession) = collection.drop(clientSession).awaitFirstOrNull()
 
     /**
      * Creates an index.
@@ -835,7 +837,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @return the fluent list indexes interface
      * @mongodb.driver.manual reference/command/listIndexes/ listIndexes
      */
-    inline fun <reified T> listIndexes(): CoroutineListIndexesPublisher<T> =
+    inline fun <reified T: Any> listIndexes(): CoroutineListIndexesPublisher<T> =
         collection.listIndexes(T::class.java).coroutine
 
     /**
@@ -848,7 +850,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    inline fun <reified T> listIndexes(
+    inline fun <reified T: Any> listIndexes(
         clientSession: ClientSession
     ): CoroutineListIndexesPublisher<T> = collection.listIndexes(clientSession, T::class.java).coroutine
 
@@ -861,8 +863,8 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.driver.manual reference/command/dropIndexes/ Drop Indexes
      * @since 1.7
      */
-    suspend fun dropIndex(indexName: String, dropIndexOptions: DropIndexOptions = DropIndexOptions()): Success =
-        collection.dropIndex(indexName, dropIndexOptions).awaitSingle()
+    suspend fun dropIndex(indexName: String, dropIndexOptions: DropIndexOptions = DropIndexOptions()) =
+        collection.dropIndex(indexName, dropIndexOptions).awaitFirstOrNull()
 
     /**
      * Drops the index given the keys used to create it.
@@ -873,8 +875,8 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.driver.manual reference/command/dropIndexes/ Drop indexes
      * @since 1.7
      */
-    suspend fun dropIndex(keys: Bson, dropIndexOptions: DropIndexOptions = DropIndexOptions()): Success =
-        collection.dropIndex(keys, dropIndexOptions).awaitSingle()
+    suspend fun dropIndex(keys: Bson, dropIndexOptions: DropIndexOptions = DropIndexOptions()) =
+        collection.dropIndex(keys, dropIndexOptions).awaitFirstOrNull()
 
     /**
      * Drops the given index.
@@ -891,8 +893,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
         clientSession: ClientSession,
         indexName: String,
         dropIndexOptions: DropIndexOptions = DropIndexOptions()
-    ): Success =
-        collection.dropIndex(clientSession, indexName, dropIndexOptions).awaitSingle()
+    ) = collection.dropIndex(clientSession, indexName, dropIndexOptions).awaitFirstOrNull()
 
     /**
      * Drops the index given the keys used to create it.
@@ -909,8 +910,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
         clientSession: ClientSession,
         keys: Bson,
         dropIndexOptions: DropIndexOptions = DropIndexOptions()
-    ): Success =
-        collection.dropIndex(clientSession, keys, dropIndexOptions).awaitSingle()
+    ) = collection.dropIndex(clientSession, keys, dropIndexOptions).awaitFirstOrNull()
 
 
     /**
@@ -921,8 +921,8 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @mongodb.driver.manual reference/command/dropIndexes/ Drop Indexes
      * @since 1.7
      */
-    suspend fun dropIndexes(dropIndexOptions: DropIndexOptions = DropIndexOptions()): Success =
-        collection.dropIndexes(dropIndexOptions).awaitSingle()
+    suspend fun dropIndexes(dropIndexOptions: DropIndexOptions = DropIndexOptions()) =
+        collection.dropIndexes(dropIndexOptions).awaitFirstOrNull()
 
 
     /**
@@ -938,8 +938,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
     suspend fun dropIndexes(
         clientSession: ClientSession,
         dropIndexOptions: DropIndexOptions = DropIndexOptions()
-    ): Success =
-        collection.dropIndexes(clientSession, dropIndexOptions).awaitSingle()
+    ) = collection.dropIndexes(clientSession, dropIndexOptions).awaitFirstOrNull()
 
     /**
      * Rename the collection with oldCollectionName to the newCollectionName.
@@ -952,7 +951,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
     suspend fun renameCollection(
         newCollectionNamespace: MongoNamespace,
         options: RenameCollectionOptions = RenameCollectionOptions()
-    ): Success = collection.renameCollection(newCollectionNamespace, options).awaitSingle()
+    ) = collection.renameCollection(newCollectionNamespace, options).awaitFirstOrNull()
 
     /**
      * Rename the collection with oldCollectionName to the newCollectionName.
@@ -968,7 +967,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
     suspend fun renameCollection(
         clientSession: ClientSession, newCollectionNamespace: MongoNamespace,
         options: RenameCollectionOptions = RenameCollectionOptions()
-    ): Success = collection.renameCollection(clientSession, newCollectionNamespace, options).awaitSingle()
+    ) = collection.renameCollection(clientSession, newCollectionNamespace, options).awaitFirstOrNull()
 
 
     /** KMongo extensions **/
@@ -1003,7 +1002,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @param filter      the query filter
      * @param <Type>   the target type of the iterable
      */
-    inline fun <reified Type> distinct(
+    inline fun <reified Type: Any> distinct(
         fieldName: String,
         filter: String
     ): CoroutineDistinctPublisher<Type> = distinct(fieldName, toBson(filter))
@@ -1015,7 +1014,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @param filter      the query filter
      * @param <Type>   the target type of the iterable.
      */
-    inline fun <reified Type> distinct(
+    inline fun <reified Type: Any> distinct(
         field: KProperty1<T, Type>,
         filter: Bson = EMPTY_BSON
     ): CoroutineDistinctPublisher<Type> = distinct(field.path(), filter)
@@ -1168,7 +1167,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      * @return the result of the remove many operation
      */
     suspend fun deleteMany(
-        filter: String,
+        filter: String = EMPTY_JSON,
         options: DeleteOptions = DeleteOptions()
     ): DeleteResult = deleteMany(toBson(filter), options)
 
@@ -1183,7 +1182,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
      */
     suspend fun deleteMany(
         clientSession: ClientSession,
-        filter: String,
+        filter: String = EMPTY_JSON,
         options: DeleteOptions = DeleteOptions()
     ): DeleteResult = deleteMany(clientSession, toBson(filter), options)
 
@@ -1783,7 +1782,7 @@ class CoroutineCollection<T : Any>(val collection: MongoCollection<T>) {
 suspend inline fun <reified T : Any> CoroutineCollection<T>.insertOne(
     document: String,
     options: InsertOneOptions = InsertOneOptions()
-): Success =
+): InsertOneResult =
     withDocumentClass<BsonDocument>().insertOne(
         toBson(document, T::class),
         options
@@ -1800,7 +1799,7 @@ suspend inline fun <reified T : Any> CoroutineCollection<T>.insertOne(
     clientSession: ClientSession,
     document: String,
     options: InsertOneOptions = InsertOneOptions()
-): Success =
+): InsertOneResult =
     withDocumentClass<BsonDocument>().insertOne(
         clientSession,
         toBson(document, T::class),

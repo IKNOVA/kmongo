@@ -24,20 +24,20 @@ import java.util.concurrent.TimeUnit
 /**
  * Gets coroutine version of [ListCollectionsPublisher].
  */
-val <T> ListCollectionsPublisher<T>.coroutine: CoroutineListCollectionsPublisher<T>
+val <T: Any> ListCollectionsPublisher<T>.coroutine: CoroutineListCollectionsPublisher<T>
     get() =
         CoroutineListCollectionsPublisher(this)
 
 /**
  * Coroutine wrapper around [ListCollectionsPublisher].
  */
-class CoroutineListCollectionsPublisher<TResult>(override val publisher: ListCollectionsPublisher<TResult>) :
+class CoroutineListCollectionsPublisher<TResult: Any>(override val publisher: ListCollectionsPublisher<TResult>) :
     CoroutinePublisher<TResult>(publisher) {
 
     /**
      * Sets the query filter to apply to the query.
      *
-     * @param filter the filter, which may be null.
+     * @param filter the filter
      * @return this
      * @mongodb.driver.manual reference/method/db.collection.find/ Filter
      */

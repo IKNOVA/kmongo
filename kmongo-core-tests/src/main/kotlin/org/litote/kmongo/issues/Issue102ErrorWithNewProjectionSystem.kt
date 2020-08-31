@@ -24,7 +24,6 @@ import org.litote.kmongo.KMongoBaseTest
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import org.litote.kmongo.issues.Issue102ErrorWithNewProjectionSystem.NationRelation
-import org.litote.kmongo.kotlin.collections.firstOrNull
 import org.litote.kmongo.newId
 import org.litote.kmongo.projection
 import kotlin.test.assertEquals

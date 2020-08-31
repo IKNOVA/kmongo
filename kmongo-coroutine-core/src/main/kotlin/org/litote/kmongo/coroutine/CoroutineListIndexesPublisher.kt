@@ -23,21 +23,21 @@ import java.util.concurrent.TimeUnit
 /**
  * Gets coroutine version of [CoroutineListIndexesPublisher].
  */
-val <T> ListIndexesPublisher<T>.coroutine: CoroutineListIndexesPublisher<T>
+val <T: Any> ListIndexesPublisher<T>.coroutine: CoroutineListIndexesPublisher<T>
     get() =
         CoroutineListIndexesPublisher(this)
 
 /**
  * Coroutine wrapper around [CoroutineListIndexesPublisher].
  */
-class CoroutineListIndexesPublisher<T>(override val publisher: ListIndexesPublisher<T>) :
+class CoroutineListIndexesPublisher<T: Any>(override val publisher: ListIndexesPublisher<T>) :
     CoroutinePublisher<T>(publisher) {
 
     /**
      * Sets the maximum execution time on the server for this operation.
      *
      * @param maxTime  the max time
-     * @param timeUnit the time unit, which may not be null
+     * @param timeUnit the time unit
      * @return this
      * @mongodb.driver.manual reference/operator/meta/maxTimeMS/ Max Time
      */

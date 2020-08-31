@@ -16,7 +16,7 @@
 
 package org.litote.kmongo
 
-import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.types.Binary
 import org.junit.Assert.assertArrayEquals
@@ -32,7 +32,7 @@ class BinaryTest : AllCategoriesKMongoBaseTest<BinaryFriend>() {
 
     @Serializable
     data class BinaryFriend(
-        @ContextualSerialization
+        @Contextual
         val _id: Binary,
         var name: String = "none")
 
@@ -79,7 +79,7 @@ class BinaryTest : AllCategoriesKMongoBaseTest<BinaryFriend>() {
         val doc = BinaryFriend(Binary("abcde".toByteArray()))
 
         col.insertOne(doc)
-        val count = col.count("{'_id' : { $binary : 'YWJjZGU=' , $type : '0'}}")
+        val count = col.countDocuments("{'_id' : { $binary : 'YWJjZGU=' , $type : '0'}}")
         val r = col.findOne("{_id:${doc._id.json}}")
         assertEquals(1, count)
         assertEquals(doc._id.type, r!!._id.type)

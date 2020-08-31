@@ -1,5 +1,11 @@
 # Quick Start
 
+## Kotlin 1.4 support
+
+The 4.1.1 version is the first version compatible with kotlin 1.4. 
+
+If you stay with kotlin 1.3.72, please use KMongo 4.1.0 version.
+
 ## Choose the java driver
 
 Do you need to use the sync or the async driver?
@@ -12,15 +18,23 @@ If you don't know, start with the sync driver and add this dependency to your pr
 <dependency>
   <groupId>org.litote.kmongo</groupId>
   <artifactId>kmongo</artifactId>
-  <version>3.12.2</version>
+  <version>4.1.2</version>
 </dependency>
 ```
 
-- or Gradle
+- or Gradle 
 
-```
-compile 'org.litote.kmongo:kmongo:3.12.2'
-```
+*(Kotlin)* 
+```kotlin
+implementation("org.litote.kmongo:kmongo:4.1.2")
+``` 
+*(Groovy)* 
+```groovy
+implementation 'org.litote.kmongo:kmongo:4.1.2'
+```   
+
+> Starting from 4.0, minimum supported jvm is now 1.8 (was 1.6).
+> You have to set the property **jvmTarget** to 1.8 (or more) in your gradle or maven descriptor
 
 And [start coding](#lets-start-coding)
 
@@ -37,14 +51,19 @@ For the asynchronous driver, reactive streams style, [Kotlin Coroutines](https:/
 <dependency>
   <groupId>org.litote.kmongo</groupId>
   <artifactId>kmongo-async</artifactId>
-  <version>3.12.2</version>
+  <version>4.1.2</version>
 </dependency>
 ```
 
 - or Gradle
 
-```
-compile 'org.litote.kmongo:kmongo-async:3.12.2'
+*(Kotlin)* 
+```kotlin
+implementation("org.litote.kmongo:kmongo-async:4.1.2")
+``` 
+*(Groovy)* 
+```groovy
+implementation 'org.litote.kmongo:kmongo-async:4.1.2'
 ```
 
 #### Kotlin Coroutines
@@ -55,14 +74,19 @@ compile 'org.litote.kmongo:kmongo-async:3.12.2'
 <dependency>
   <groupId>org.litote.kmongo</groupId>
   <artifactId>kmongo-coroutine</artifactId>
-  <version>3.12.2</version>
+  <version>4.1.2</version>
 </dependency>
 ```
 
-- or Gradle
+- or Gradle (Kotlin)
 
-```
-compile 'org.litote.kmongo:kmongo-coroutine:3.12.2'
+*(Kotlin)* 
+```kotlin
+implementation("org.litote.kmongo:kmongo-coroutine:4.1.2")
+``` 
+*(Groovy)* 
+```groovy
+implementation 'org.litote.kmongo:kmongo-coroutine:4.1.2'
 ```
 
 #### RxJava2
@@ -73,14 +97,19 @@ compile 'org.litote.kmongo:kmongo-coroutine:3.12.2'
 <dependency>
   <groupId>org.litote.kmongo</groupId>
   <artifactId>kmongo-rxjava2</artifactId>
-  <version>3.12.2</version>
+  <version>4.1.2</version>
 </dependency>
 ```
 
 - or Gradle
 
-```
-compile 'org.litote.kmongo:kmongo-rxjava2:3.12.2'
+*(Kotlin)* 
+```kotlin
+implementation("org.litote.kmongo:kmongo-rxjava2:4.1.2")
+``` 
+*(Groovy)* 
+```groovy
+implementation 'org.litote.kmongo:kmongo-rxjava2:4.1.2'
 ```
 
 ## Object Mapping Engine
@@ -93,7 +122,7 @@ by adding a ```-serialization``` suffix to the artifactId.
 
 For example, replace ```kmongo``` by ```kmongo-native``` or ```kmongo-serialization``` for the sync driver
 For the coroutine driver, replace ```kmongo-coroutine``` by ```kmongo-coroutine-native```  or ```kmongo-coroutine-serialization``` .
-You can read more about the mapping engine in the [dedicated chapter](object-mapping/index.html#how-to-choose-the-mapping-engine). 
+You can read more about the mapping engine in the [dedicated chapter](../object-mapping#how-to-choose-the-mapping-engine). 
 
 ## Let's Start Coding
 
@@ -151,8 +180,8 @@ data class Jedi(val name: String, val age: Int, val firstAppearance: StarWarsFil
 @Serializable
 data class StarWarsFilm(
 val name: String,             
-//annotate with @ContextualSerialization the types that have already serializers - look at kotlinx.serialization documentation
-@ContextualSerialization val date: LocalDate
+//annotate with @Contextual the types that have already serializers - look at kotlinx.serialization documentation
+@Contextual val date: LocalDate
 )
 
 val client = KMongo.createClient() //get com.mongodb.MongoClient new instance
@@ -173,6 +202,5 @@ val yoda : Jedi? = col.findOne(Jedi::name eq "Yoda")
 The KMongo API documentation in KDoc format is available:
 
 - [KMongo](https://litote.org/kmongo/dokka/kmongo/org.litote.kmongo/index.html)
-- [KMongo async](https://litote.org/kmongo/dokka/kmongo/org.litote.kmongo.async/index.html)
 - [KMongo coroutine](https://litote.org/kmongo/dokka/kmongo/org.litote.kmongo.coroutine/index.html)
 - [KMongo RXJava2](https://litote.org/kmongo/dokka/kmongo/org.litote.kmongo.rxjava2/index.html)

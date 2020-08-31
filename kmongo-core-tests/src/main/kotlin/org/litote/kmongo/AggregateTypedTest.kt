@@ -20,7 +20,7 @@ import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Aggregates
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Variable
-import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bson.codecs.pojo.annotations.BsonId
@@ -49,7 +49,7 @@ class AggregateTypedTest : AllCategoriesKMongoBaseTest<Article>() {
         val title: String,
         val author: String,
         val tags: List<String>,
-        @ContextualSerialization
+        @Contextual
         val date: Instant = Instant.now(),
         val count: Int = 1,
         val ok: Boolean = true
@@ -120,6 +120,26 @@ class AggregateTypedTest : AllCategoriesKMongoBaseTest<Article>() {
 
     @Test
     fun `can aggregate complex queries and deserialize in object`() {
+        val query = listOf(
+            match(
+                Article::tags contains "virus"
+            ),
+            project(
+                Article::title from Article::title,
+                Article::ok from cond(Article::ok, 1, 0),
+                Result::averageYear from year(Article::date)
+            ),
+            group(
+                Article::title,
+                Result::count sum Article::ok,
+                Result::averageYear avg Result::averageYear
+            ),
+            sort(
+                ascending(
+                    Result::title
+                )
+            )
+        )
 
         val r = col.aggregate<Result>(
             match(
@@ -127,7 +147,7 @@ class AggregateTypedTest : AllCategoriesKMongoBaseTest<Article>() {
             ),
             project(
                 Article::title from Article::title,
-                Article::ok from cond(Article::ok, 1, 0),
+                Article::ok from cond(Article::ok, 1, 0),  
                 Result::averageYear from year(Article::date)
             ),
             group(
@@ -229,7 +249,7 @@ class AggregateTypedTest : AllCategoriesKMongoBaseTest<Article>() {
     }
 
     @Serializable
-    data class Answer(val evaluator: String, val alreadyUsed: Boolean, @ContextualSerialization val answerDate: Instant)
+    data class Answer(val evaluator: String, val alreadyUsed: Boolean, @Contextual val answerDate: Instant)
 
     @Serializable
     data class EvaluationsForms(val questions: List<String>)

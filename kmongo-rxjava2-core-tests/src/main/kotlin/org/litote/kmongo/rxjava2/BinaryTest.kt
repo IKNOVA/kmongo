@@ -15,7 +15,7 @@
  */
 package org.litote.kmongo.rxjava2
 
-import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.types.Binary
 import org.junit.Assert.assertArrayEquals
@@ -32,7 +32,7 @@ import kotlin.test.assertNull
 class BinaryTest : KMongoRxBaseTest<BinaryTest.BinaryFriend>() {
 
     @Serializable
-    data class BinaryFriend(@ContextualSerialization val _id: Binary, var name: String = "none")
+    data class BinaryFriend(@Contextual val _id: Binary, var name: String = "none")
 
     lateinit var friendId: Binary
 
@@ -80,7 +80,7 @@ class BinaryTest : KMongoRxBaseTest<BinaryTest.BinaryFriend>() {
         val doc = BinaryFriend(Binary("abcde".toByteArray()))
 
         col.insertOne(doc).blockingAwait()
-        val count = col.count("{'_id' : { $binary : 'YWJjZGU=' , $type : '0'}}").blockingGet()
+        val count = col.countDocuments("{'_id' : { $binary : 'YWJjZGU=' , $type : '0'}}").blockingGet()
         val savedDoc = col.findOne("{_id:${doc._id.json}}").blockingGet() ?: throw AssertionError("Must not NUll")
 
         assertEquals(1, count)

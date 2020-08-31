@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.litote.kmongo</groupId>
         <artifactId>kmongo-root</artifactId>
-        <version>3.12.3-SNAPSHOT</version>
+        <version>4.1.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>kmongo-native-mapping</artifactId>
@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>org.mongodb</groupId>
-            <artifactId>mongodb-driver</artifactId>
+            <artifactId>mongodb-driver-sync</artifactId>
             <scope>provided</scope>
         </dependency>
 
@@ -94,11 +94,14 @@
                     <sourceDirectories>
                         <dir>${project.basedir}/../kmongo-shared/src/main/kotlin</dir>
                     </sourceDirectories>
-                    <externalDocumentationLinks>
-                        <link>
-                            <url>http://mongodb.github.io/mongo-java-driver/${mongo.base.version}/javadoc/</url>
-                        </link>
-                    </externalDocumentationLinks>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>

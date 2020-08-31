@@ -19,12 +19,28 @@ package org.litote.kmongo.util
 import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
 import com.fasterxml.jackson.databind.Module
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.bson.UuidRepresentation
 import org.bson.codecs.configuration.CodecProvider
 import org.litote.kmongo.jackson.JacksonCodecProvider
 import org.litote.kmongo.jackson.ObjectMapperFactory
 import org.litote.kmongo.jackson.customModuleInitialized
 import kotlin.LazyThreadSafetyMode.PUBLICATION
-import kotlin.reflect.KClass
+
+/**
+ * Configure the jackson mapper engine.
+ *
+ * Call the methods of this object *before* any call to [KMongoConfiguration] methods.
+ */
+object KMongoJacksonFeature {
+
+    /**
+     * Set the [UuidRepresentation] for the serialized version of the UUID class.
+     */
+    fun setUUIDRepresentation(uuidRepresentation: UuidRepresentation?) {
+        KMongoConfiguration.bsonMapper = ObjectMapperFactory.createBsonObjectMapper(uuidRepresentation)
+        KMongoConfiguration.bsonMapperCopy = ObjectMapperFactory.createBsonObjectMapperCopy(uuidRepresentation)
+    }
+}
 
 /**
  * Use this class to customize the default behaviour of KMongo jackson bindings.
@@ -42,20 +58,10 @@ object KMongoConfiguration {
     var bsonMapper: ObjectMapper = ObjectMapperFactory.createBsonObjectMapper()
 
     /**
-     * Basically a copy of [bsonMapper] without [org.litote.bson4jackson.BsonFactory].
+     * Basically a copy of [bsonMapper] without [org.litote.kmongo.jackson.KMongoBsonFactory].
      * Used by [org.litote.kmongo.jackson.JacksonCodec] to resolves specific serialization issues.
      */
     var bsonMapperCopy: ObjectMapper = ObjectMapperFactory.createBsonObjectMapperCopy()
-
-    /**
-     * To change the default collection name strategy - default is camel case.
-     */
-    @Deprecated("Use CollectionNameFormatter.defaultCollectionNameBuilder")
-    var defaultCollectionNameBuilder: (KClass<*>) -> String
-        get() = CollectionNameFormatter.defaultCollectionNameBuilder
-        set(value) {
-            CollectionNameFormatter.defaultCollectionNameBuilder = value
-        }
 
     @Volatile
     private var currentJacksonCodecProvider: CodecProvider? = null
@@ -150,33 +156,4 @@ object KMongoConfiguration {
         customModuleInitialized = false
     }
 
-    /**
-     * Use Camel Case default collection name builder.
-     *
-     * @param fromClass optional custom [KClass] -> [String] transformer (default is [KClass.simpleName])
-     */
-    @Deprecated("Use CollectionNameFormatter.useCamelCaseCollectionNameBuilder")
-    fun useCamelCaseCollectionNameBuilder(fromClass: (KClass<*>) -> String = { it.simpleName!! }) {
-        CollectionNameFormatter.useCamelCaseCollectionNameBuilder(fromClass)
-    }
-
-    /**
-     * Use Snake Case default collection name builder.
-     *
-     * @param fromClass optional custom [KClass] -> [String] transformer (default is [KClass.simpleName])
-     */
-    @Deprecated("Use CollectionNameFormatter.useSnakeCaseCollectionNameBuilder")
-    fun useSnakeCaseCollectionNameBuilder(fromClass: (KClass<*>) -> String = { it.simpleName!! }) {
-        CollectionNameFormatter.useSnakeCaseCollectionNameBuilder(fromClass)
-    }
-
-    /**
-     * Use Lower Case default collection name builder.
-     *
-     * @param fromClass optional custom [KClass] -> [String] transformer (default is [KClass.simpleName])
-     */
-    @Deprecated("Use CollectionNameFormatter.useLowerCaseCollectionNameBuilder")
-    fun useLowerCaseCollectionNameBuilder(fromClass: (KClass<*>) -> String = { it.simpleName!! }) {
-        CollectionNameFormatter.useLowerCaseCollectionNameBuilder(fromClass)
-    }
 }

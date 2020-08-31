@@ -40,7 +40,6 @@ import com.mongodb.client.result.DeleteResult
 import com.mongodb.client.result.UpdateResult
 import org.bson.BsonDocument
 import org.bson.conversions.Bson
-import org.litote.kmongo.kotlin.collections.firstOrNull
 import org.litote.kmongo.util.KMongoUtil
 import org.litote.kmongo.util.PairProjection
 import org.litote.kmongo.util.SingleProjection
@@ -66,18 +65,6 @@ fun <T> MongoCollection<T>.withKMongo(): MongoCollection<T> =
  */
 inline fun <reified NewTDocument : Any> MongoCollection<*>.withDocumentClass(): MongoCollection<NewTDocument> =
     withDocumentClass(NewTDocument::class.java)
-
-/**
- * Counts the number of documents in the collection according to the given options.
- *
- * @param filter  the query filter
- * @param options the options describing the count
- *
- * @return the number of documents in the collection
- */
-@Deprecated("use countDocuments instead")
-fun <T> MongoCollection<T>.count(filter: String, options: CountOptions = CountOptions()): Long =
-    count(KMongoUtil.toBson(filter), options)
 
 /**
  * Counts the number of documents in the collection according to the given options.

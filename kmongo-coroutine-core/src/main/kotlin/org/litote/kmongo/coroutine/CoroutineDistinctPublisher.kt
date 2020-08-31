@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit
 /**
  * Gets coroutine version of [CoroutineDistinctPublisher].
  */
-val <T> DistinctPublisher<T>.coroutine: CoroutineDistinctPublisher<T>
+val <T: Any> DistinctPublisher<T>.coroutine: CoroutineDistinctPublisher<T>
     get() = CoroutineDistinctPublisher(
         this
     )
@@ -33,13 +33,13 @@ val <T> DistinctPublisher<T>.coroutine: CoroutineDistinctPublisher<T>
 /**
  * Coroutine wrapper around [CoroutineDistinctPublisher].
  */
-class CoroutineDistinctPublisher<T>(override val publisher: DistinctPublisher<T>) :
+class CoroutineDistinctPublisher<T: Any>(override val publisher: DistinctPublisher<T>) :
     CoroutinePublisher<T>(publisher) {
 
     /**
      * Sets the query filter to apply to the query.
      *
-     * @param filter the filter, which may be null.
+     * @param filter the filter
      * @return this
      * @mongodb.driver.manual reference/method/db.collection.find/ Filter
      */

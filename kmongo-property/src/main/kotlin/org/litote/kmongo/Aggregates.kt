@@ -27,6 +27,7 @@ import com.mongodb.client.model.GraphLookupOptions
 import com.mongodb.client.model.Projections
 import com.mongodb.client.model.Sorts
 import com.mongodb.client.model.UnwindOptions
+import com.mongodb.client.model.Updates
 import com.mongodb.client.model.Variable
 import org.bson.BsonDocument
 import org.bson.BsonDocumentWriter
@@ -132,7 +133,7 @@ fun document(vararg elements: Bson?): Bson = document(elements.filterNotNull())
  * @return the document as Bson
  */
 fun document(elements: Collection<Bson>): Bson =
-    if (elements.isEmpty()) EMPTY_BSON else and(elements)
+    if (elements.isEmpty()) EMPTY_BSON else combineFilters(Updates::combine, elements)
 
 /**
  * Creates a $project pipeline stage for the specified getProjection
@@ -452,12 +453,6 @@ fun second(property: KProperty<TemporalAccessor?>): Bson = MongoOperator.second.
  * Builds $week expression for this property .
  */
 fun week(property: KProperty<TemporalAccessor?>): Bson = MongoOperator.week.from(property)
-
-/**
- * Builds the [MongoOperator] expression for the specified property.
- */
-@Deprecated("use from instead", replaceWith = ReplaceWith("from"))
-fun MongoOperator.op(property: KProperty<Any?>): Bson = from(property)
 
 /**
  * Creates a $lookup pipeline stage, joining the current collection with the one specified in from using the given pipeline

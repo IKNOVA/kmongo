@@ -23,7 +23,6 @@ import org.junit.Test
 import org.litote.kmongo.AllCategoriesKMongoBaseTest
 import org.litote.kmongo.find
 import org.litote.kmongo.issues.Issue73IdNotDeserializedWhenUsingInterfaceAsCollectionClass.Intermediate
-import org.litote.kmongo.kotlin.collections.toList
 import kotlin.test.assertEquals
 
 /**

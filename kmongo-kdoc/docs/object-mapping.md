@@ -5,9 +5,11 @@ Query results are automatically mapped to objects.
 ## Set your _id
 
 To manage Mongo ```_id```, a class must have one ```_id``` property
- or a property annotated with the ```@BsonId``` annotation.
+OR a property annotated with the ```@BsonId``` annotation.
  
-> For **kotlinx serialization**, ```@BsonId``` is not supported. Use ```@SerialName("_id")``` on the id property.
+> For **kotlinx serialization**, ```@BsonId``` is not supported - you have to use ```@SerialName("_id") @MongoId``` as ```@BsonId``` replacement.
+>          
+> For example, ```Data(@Contextual val _id: Id<Data>)``` and ```Data(@Contextual @SerialName("_id") @MongoId val myId: Id<Data>)``` are equivalent.
  
 If there is no such field in your class, an ```ObjectId``` _id is generated on server side.
 
@@ -33,7 +35,7 @@ It is easy to transform an ObjectId in Id<> with the *toId()* extension:
 LightSaber(ObjectId("myId").toId())
 ``` 
 
-> For **kotlinx serialization** add ```@ContextualSerialization``` annotation on ```Id``` properties.
+> For **kotlinx serialization** ```@Contextual``` is mandatory on the ```Id``` property.
 
 #### KMongo Id does not depend of Mongo nor KMongo lib
                      
@@ -48,14 +50,14 @@ You just have to add the ```kmongo-id``` dependency in the frontend to compile.
 <dependency>
   <groupId>org.litote.kmongo</groupId>
   <artifactId>kmongo-id</artifactId>
-  <version>3.12.2</version>
+  <version>4.1.2</version>
 </dependency>
 ```
 
 - or Gradle
 
 ```
-compile 'org.litote.kmongo:kmongo-id:3.12.2'
+compile 'org.litote.kmongo:kmongo-id:4.1.2'
 ```
 
 #### Id <> Json Jackson serialization
@@ -78,6 +80,20 @@ gsonBuilder.registerTypeAdapter(Id::class.java,
 gsonBuilder.registerTypeAdapter(Id::class.java,
         JsonDeserializer<Id<Any>> { id, _, _ -> id.asString.toId() })
 val gson = gsonBuilder.create()
+``` 
+
+#### Id <> Json KotlinX serialization
+
+If you use KotlinX serialization to serialize your objects to json (in order to transfer your data between frontend and backend),
+add the ```kmongo-id-serialization``` dependency and register the ```IdKotlinXSerializationModule``` module:
+
+```kotlin     
+@Serializable
+data class Data(@Contextual val _id: Id<Data> = newId())
+
+val json = Json { serializersModule = IdKotlinXSerializationModule }
+val data = Data()
+val json = json.encodeToString(data) 
 ```
 
 ### Other _id types
@@ -138,9 +154,28 @@ All the common cases are covered. However, there are some limitations. For examp
 
 ### The kotlinx serialization choice
 
-Starting with 3.12.2 version, KMongo also supports [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) mapping.
+Starting with 3.11.2 version, KMongo also supports [Kotlinx Serialization](https://github.com/Kotlin/kotlinx.serialization) mapping.
 
 The main advantage of this kind of mapping is that **almost no (slow) reflection** is involved.
+
+#### Workaround around typed queries and ```@SerialName```
+
+Starting for kotlin 1.4, if you have a data class with a ```@SerialName``` annotation and it, and if you use typed queries,
+ you need to add the ```@MongoProperty``` on the property to query the right field name. 
+ 
+```kotlin     
+@Serializable
+data class Data(@SerialName("mongoOtherName") val s: String)
+    
+col.insert(Data("a")) // insert { "mongoOtherName": "a" }
+col.find(Data::s eq "a") // -> generate a query { "s": "a" }  
+
+@Serializable
+data class FixedData(@SerialName("mongoOtherName") @MongoProperty("mongoOtherName") val s: String) 
+
+col.insert(FixedData("a")) // insert { "mongoOtherName": "a" }
+col.find(FixedData::s eq "a") // -> generate a query { "mongoOtherName": "a" } 
+```
 
 #### Additional Modules and Serializers
 
@@ -164,4 +199,4 @@ dependency!
 
 Choose your poison! :)
 
-See also [Performance section](performance/index.html).
+See also [Performance section](../performance).

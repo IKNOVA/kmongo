@@ -16,11 +16,13 @@
 
 package org.litote.kmongo
 
-import kotlinx.serialization.ContextualSerialization
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import org.bson.Document
 import org.junit.Test
 import org.litote.kmongo.DateTest.DateValue
+import org.litote.kmongo.MongoOperator.gte
+import org.litote.kmongo.MongoOperator.lt
 import java.time.Instant
 import java.time.Instant.now
 import java.time.LocalDate
@@ -46,23 +48,23 @@ class DateTest : AllCategoriesKMongoBaseTest<DateValue>() {
 
     @Serializable
     data class DateValue(
-        @ContextualSerialization
+        @Contextual
         val date: Date?,
-        @ContextualSerialization
+        @Contextual
         val calendar: Calendar?,
-        @ContextualSerialization
+        @Contextual
         val localDateTime: LocalDateTime?,
-        @ContextualSerialization
+        @Contextual
         val localDate: LocalDate?,
-        @ContextualSerialization
+        @Contextual
         val localTime: LocalTime?,
-        @ContextualSerialization
+        @Contextual
         var zonedDateTime: ZonedDateTime?,
-        @ContextualSerialization
+        @Contextual
         var offsetDateTime: OffsetDateTime?,
-        @ContextualSerialization
+        @Contextual
         var offsetTime: OffsetTime?,
-        @ContextualSerialization
+        @Contextual
         val instant: Instant?
     ) {
 
@@ -148,6 +150,16 @@ class DateTest : AllCategoriesKMongoBaseTest<DateValue>() {
     @Test
     fun testUTCDateStorageInMongoWithGMTminus1CurrentTimeZone() {
         testUTCDateStorage("GMT-1:00", "23:00:00")
+    }
+
+    @Test
+    fun testDateQuery() {
+        val date = LocalDateTime.now()
+        col.findOne(
+            """{"date":{$gte: ${date.truncatedTo(ChronoUnit.DAYS).json}, $lt: ${date.truncatedTo(ChronoUnit.DAYS).plusDays(
+                1
+            ).json} } }"""
+        )
     }
 
     private fun testUTCDateStorage(timezone: String, timeDate: String) {

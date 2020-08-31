@@ -24,9 +24,7 @@ import com.mongodb.client.model.CreateViewOptions
 import com.mongodb.reactivestreams.client.ClientSession
 import com.mongodb.reactivestreams.client.MongoCollection
 import com.mongodb.reactivestreams.client.MongoDatabase
-import com.mongodb.reactivestreams.client.Success
 import kotlinx.coroutines.reactive.awaitFirstOrNull
-import kotlinx.coroutines.reactive.awaitSingle
 import org.bson.Document
 import org.bson.codecs.configuration.CodecRegistry
 import org.bson.conversions.Bson
@@ -164,7 +162,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      *
      * @mongodb.driver.manual reference/commands/dropDatabase/#dbcmd.dropDatabase Drop database
      */
-    suspend fun drop(): Success = database.drop().awaitSingle()
+    suspend fun drop() = database.drop().awaitFirstOrNull()
 
     /**
      * Drops this database.
@@ -174,7 +172,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      * @mongodb.server.release 3.6
      * @since 1.7
      */
-    suspend fun drop(clientSession: ClientSession): Success = database.drop(clientSession).awaitSingle()
+    suspend fun drop(clientSession: ClientSession) = database.drop(clientSession).awaitFirstOrNull()
 
     /**
      * Gets the names of all the collections in this database.
@@ -202,7 +200,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      * @return the fluent list collections interface
      * @mongodb.driver.manual reference/command/listCollections listCollections
      */
-    inline fun <reified TResult> listCollections(): CoroutineListCollectionsPublisher<TResult> =
+    inline fun <reified TResult: Any> listCollections(): CoroutineListCollectionsPublisher<TResult> =
         database.listCollections(TResult::class.java).coroutine
 
     /**
@@ -212,7 +210,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      * @return the fluent list collections interface
      * @mongodb.driver.manual reference/command/listCollections listCollections
      */
-    inline fun <reified TResult> listCollections(clientSession: ClientSession): CoroutineListCollectionsPublisher<TResult> =
+    inline fun <reified TResult: Any> listCollections(clientSession: ClientSession): CoroutineListCollectionsPublisher<TResult> =
         database.listCollections(clientSession, TResult::class.java).coroutine
 
     /**
@@ -222,8 +220,8 @@ class CoroutineDatabase(val database: MongoDatabase) {
      * @param options        various options for creating the collection
      * @mongodb.driver.manual reference/commands/create Create Command
      */
-    suspend fun createCollection(collectionName: String, options: CreateCollectionOptions = CreateCollectionOptions())
-            : Success = database.createCollection(collectionName, options).awaitSingle()
+    suspend fun createCollection(collectionName: String, options: CreateCollectionOptions = CreateCollectionOptions()) =
+        database.createCollection(collectionName, options).awaitFirstOrNull()
 
     /**
      * Create a new collection with the selected options
@@ -237,7 +235,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
         clientSession: ClientSession,
         collectionName: String,
         options: CreateCollectionOptions = CreateCollectionOptions()
-    ): Success = database.createCollection(clientSession, collectionName, options).awaitSingle()
+    ) = database.createCollection(clientSession, collectionName, options).awaitFirstOrNull()
 
     /**
      * Creates a view with the given name, backing collection/view name, aggregation pipeline, and options that defines the view.
@@ -256,7 +254,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
         viewOn: String,
         pipeline: List<Bson>,
         createViewOptions: CreateViewOptions = CreateViewOptions()
-    ): Success = database.createView(viewName, viewOn, pipeline, createViewOptions).awaitSingle()
+    ) = database.createView(viewName, viewOn, pipeline, createViewOptions).awaitFirstOrNull()
 
     /**
      * Creates a view with the given name, backing collection/view name, aggregation pipeline, and options that defines the view.
@@ -276,7 +274,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
         viewOn: String,
         pipeline: List<Bson>,
         createViewOptions: CreateViewOptions = CreateViewOptions()
-    ): Success = database.createView(clientSession, viewName, viewOn, pipeline, createViewOptions).awaitSingle()
+    ) = database.createView(clientSession, viewName, viewOn, pipeline, createViewOptions).awaitFirstOrNull()
 
     /**
      * Creates a change stream for this database.
@@ -288,7 +286,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      * @since 1.9
      * @mongodb.server.release 4.0
      */
-    inline fun <reified TResult> watch(pipeline: List<Bson> = emptyList()): CoroutineChangeStreamPublisher<TResult> =
+    inline fun <reified TResult: Any> watch(pipeline: List<Bson> = emptyList()): CoroutineChangeStreamPublisher<TResult> =
         database.watch(pipeline, TResult::class.java).coroutine
 
     /**
@@ -302,7 +300,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      * @mongodb.server.release 4.0
      * @mongodb.driver.dochub core/changestreams Change Streams
      */
-    inline fun <reified TResult> watch(
+    inline fun <reified TResult: Any> watch(
         clientSession: ClientSession,
         pipeline: List<Bson> = emptyList()
     ): CoroutineChangeStreamPublisher<TResult> =
@@ -329,7 +327,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      *
      * @mongodb.driver.manual reference/command/drop/ Drop Collection
      */
-    suspend inline fun <reified T : Any> dropCollection(): Success =
+    suspend inline fun <reified T : Any> dropCollection() =
         dropCollection(KMongoUtil.defaultCollectionName(T::class))
 
     /**
@@ -337,7 +335,7 @@ class CoroutineDatabase(val database: MongoDatabase) {
      *
      * @mongodb.driver.manual reference/command/drop/ Drop Collection
      */
-    suspend fun dropCollection(collectionName: String): Success =
+    suspend fun dropCollection(collectionName: String) =
         getCollection<Document>(collectionName).drop()
 
 }
