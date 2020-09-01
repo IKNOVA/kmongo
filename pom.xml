@@ -21,7 +21,7 @@
 
     <groupId>org.litote.kmongo</groupId>
     <artifactId>kmongo-root</artifactId>
-    <version>4.1.3-SNAPSHOT</version>
+    <version>4.1.2-IKN3</version>
     <packaging>pom</packaging>
     <name>KMongo root project</name>
     <description>Mongo client for Kotlin</description>
