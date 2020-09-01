@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.litote.kmongo</groupId>
         <artifactId>kmongo-root</artifactId>
-        <version>4.1.3-SNAPSHOT</version>
+        <version>4.1.2-IKN1</version>
     </parent>
 
     <artifactId>kmongo-shared-tests-java</artifactId>
@@ -33,7 +33,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>org.mongodb</groupId>

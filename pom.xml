@@ -21,7 +21,7 @@
 
     <groupId>org.litote.kmongo</groupId>
     <artifactId>kmongo-root</artifactId>
-    <version>4.1.3-SNAPSHOT</version>
+    <version>4.1.2-IKN1</version>
     <packaging>pom</packaging>
     <name>KMongo root project</name>
     <description>Mongo client for Kotlin</description>
@@ -63,6 +63,8 @@
         <module>kmongo-rxjava2-native</module>
         <module>kmongo-rxjava2-serialization</module>
         <module>kmongo-dokka</module>
+        <module>kmongo-kotlin-fragment</module>
+        <module>kmongo-osgi-bundle</module>
     </modules>
 
     <properties>
@@ -108,7 +110,7 @@
         <plugin.exec.version>1.2.1</plugin.exec.version>
         <plugin.build-helper.version>1.8</plugin.build-helper.version>
         <plugin.shade.version>2.2</plugin.shade.version>
-        
+
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
         <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
 
@@ -207,6 +209,11 @@
             <dependency>
                 <groupId>org.litote.kmongo</groupId>
                 <artifactId>kmongo-serialization-mapping</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.litote.kmongo</groupId>
+                <artifactId>kmongo-kotlin-fragment</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

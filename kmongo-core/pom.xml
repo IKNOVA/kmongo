@@ -20,7 +20,7 @@
     <parent>
         <groupId>org.litote.kmongo</groupId>
         <artifactId>kmongo-root</artifactId>
-        <version>4.1.3-SNAPSHOT</version>
+        <version>4.1.2-IKN1</version>
     </parent>
 
     <artifactId>kmongo-core</artifactId>
@@ -31,6 +31,10 @@
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.litote.kmongo</groupId>
+            <artifactId>kmongo-kotlin-fragment</artifactId>
         </dependency>
         <dependency>
             <groupId>org.litote.kmongo</groupId>
